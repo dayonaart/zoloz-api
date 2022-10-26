@@ -30,8 +30,7 @@ public class MainController {
     
     
     
-    @PostMapping("/facecapture/initialize")
-    // @RequestMapping(value = "/facecapture/initialize", method = RequestMethod.POST)
+    @PostMapping("facecapture/initialize")
     public JSONObject realIdInit(@RequestBody String metaInfo) {
 
         // Step 1: instantiate the request object and provide necessary parameters
@@ -53,12 +52,33 @@ public class MainController {
         JSONObject apiResp = JSON.parseObject(apiRespStr);
         JSONObject response = new JSONObject(apiResp);
         // response.put("rsaPubKey", openApiClient().getOpenApiPublicKey());
-        
-        // Step 4: return the service response
-        // Step 4: return the service response
-        System.out.println(response);
         return response;
     }
+
+    @PostMapping("facecapture/checkresult")
+    public JSONObject faceCaptureCheck(@RequestBody String req) {
+        JSONObject request=JSON.parseObject(req);
+        String businessId = "" + System.currentTimeMillis();
+        String transactionId = request.getString("transactionId");
+        String isReturnImage = request.getString("isReturnImage");
+
+        JSONObject apiReq = new JSONObject();
+        apiReq.put("bizId", businessId);
+        apiReq.put("transactionId", transactionId);
+        apiReq.put("isReturnImage", isReturnImage);
+
+        String apiRespStr = openApiClient().callOpenApi(
+                "v1.zoloz.facecapture.checkresult",
+                JSON.toJSONString(apiReq)
+        );
+
+        JSONObject apiResp = JSON.parseObject(apiRespStr);
+
+        JSONObject response = new JSONObject(apiResp);
+        System.out.println("CHECK RESULT");
+        return response;
+    }
+    
     String ZOLOZ_URL="https://sg-sandbox-api.zoloz.com";
     String clientId = "2188485307665580";
     String ZOLOZ_PUB = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvg78EIG7CKTV+FLotCu/4hJgbhPukVU1Ui8uk3tlDArt8zD8q4SH+lBovaOchxeyamSQ0HK3NgvgTIcfDhFcONETTzNr1F9aI1jiikvJC6Tx5W4va7N9UDB8+r5O362kRrttAB73pyebgAiD932Vn1hE9e31BT8Jq0+x1AEeKAl0lSKwf9AmnqnClSI/87kHjEJ2fVSLCGR93ss09lvjwaby+1bJKRZHToy5Rdto/fMVg4vn/vl4CxvqrIjELjAN1pqNM/0WXoJzopogobKSUxxGRoEN1DQgf4by30KvGxHjS71qAJvZ02N5F3ybGRug3v77MrmsQybhUBB9q4OY9QIDAQAB";
