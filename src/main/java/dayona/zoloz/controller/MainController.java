@@ -55,7 +55,8 @@ public class MainController {
         // response.put("rsaPubKey", openApiClient().getOpenApiPublicKey());
         
         // Step 4: return the service response
-        System.out.println("INITIALIZE");
+        // Step 4: return the service response
+        System.out.println(response);
         return response;
     }
     String ZOLOZ_URL="https://sg-sandbox-api.zoloz.com";
