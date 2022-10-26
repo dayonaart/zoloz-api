@@ -56,12 +56,10 @@ public class MainController {
     }
 
     @PostMapping("facecapture/checkresult")
-    public JSONObject faceCaptureCheck(@RequestBody String req) {
-        JSONObject request=JSON.parseObject(req);
+    public JSONObject faceCaptureCheck(@RequestBody String transactionId) {
+       try {
         String businessId = "" + System.currentTimeMillis();
-        String transactionId = request.getString("transactionId");
-        String isReturnImage = request.getString("isReturnImage");
-
+        String isReturnImage = "false";
         JSONObject apiReq = new JSONObject();
         apiReq.put("bizId", businessId);
         apiReq.put("transactionId", transactionId);
@@ -77,6 +75,11 @@ public class MainController {
         JSONObject response = new JSONObject(apiResp);
         System.out.println("CHECK RESULT");
         return response;
+       } catch (Exception e) {
+        JSONObject error = new JSONObject();
+        error.put("error",e.getMessage());
+        return error;
+       }
     }
     
     String ZOLOZ_URL="https://sg-sandbox-api.zoloz.com";
