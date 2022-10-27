@@ -31,16 +31,16 @@ public class MainController {
     
     
     @PostMapping("facecapture/initialize")
-    public JSONObject realIdInit(@RequestBody String metaInfo) {
+    public JSONObject realIdInit(@RequestBody String request) {
 
         // Step 1: instantiate the request object and provide necessary parameters
         JSONObject apiReq = new JSONObject();   
         // apiReq.put("flowType", "REALIDLITE_KYC");
-        apiReq.put("bizId", String.valueOf(System.currentTimeMillis()));
-        apiReq.put("userId", String.valueOf(System.currentTimeMillis()));
-        apiReq.put("metaInfo", JSON.parseObject(metaInfo));
-        apiReq.put("docType", "00000001003");
-        apiReq.put("locales","Id");
+        apiReq.put("bizId", JSON.parseObject(request).getString("bizId"));
+        apiReq.put("userId", JSON.parseObject(request).getString("userId"));
+        apiReq.put("metaInfo", JSON.parseObject(request).getString("metaInfo"));
+        apiReq.put("docType", JSON.parseObject(request).getString("docType"));
+        // apiReq.put("locale","id");
         // Step 2: call the ZOLOZ API through openApiClient
         openApiClient().setSigned(true);
         String apiRespStr = openApiClient().callOpenApi(
@@ -53,16 +53,17 @@ public class MainController {
         JSONObject response = new JSONObject(apiResp);
         // response.put("rsaPubKey", openApiClient().getOpenApiPublicKey());
         System.out.println("INITIALIZE");
+        System.out.println("PAYLOAD : "+apiReq);
         return response;
     }
 
     @PostMapping("facecapture/checkresult")
-    public JSONObject faceCaptureCheck(@RequestBody String transactionId) {
+    public JSONObject faceCaptureCheck(@RequestBody String request) {
        try {
         JSONObject apiReq = new JSONObject();
-        apiReq.put("bizId", String.valueOf(System.currentTimeMillis()));
-        apiReq.put("transactionId", transactionId);
-        apiReq.put("isReturnImage", "false");
+        apiReq.put("bizId", JSON.parseObject(request).getString("bizId"));
+        apiReq.put("transactionId", JSON.parseObject(request).getString("transactionId"));
+        apiReq.put("isReturnImage", JSON.parseObject(request).getString("isReturnImage"));
 
         String apiRespStr = openApiClient().callOpenApi(
                 "v1.zoloz.facecapture.checkresult",
@@ -72,7 +73,7 @@ public class MainController {
         JSONObject apiResp = JSON.parseObject(apiRespStr);
         JSONObject response = new JSONObject(apiResp);
         System.out.println("CHECK RESULT");
-
+        System.out.println("PAYLOAD :"+apiReq);
         return response;
        } catch (Exception e) {
         JSONObject error = new JSONObject();
