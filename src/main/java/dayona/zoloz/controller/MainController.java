@@ -35,12 +35,12 @@ public class MainController {
 
         // Step 1: instantiate the request object and provide necessary parameters
         JSONObject apiReq = new JSONObject();   
-        apiReq.put("flowType", "REALIDLITE_KYC");
+        // apiReq.put("flowType", "REALIDLITE_KYC");
         apiReq.put("bizId", String.valueOf(System.currentTimeMillis()));
         apiReq.put("userId", String.valueOf(System.currentTimeMillis()));
         apiReq.put("metaInfo", JSON.parseObject(metaInfo));
         apiReq.put("docType", "00000001003");
-        
+        apiReq.put("locales","Id");
         // Step 2: call the ZOLOZ API through openApiClient
         openApiClient().setSigned(true);
         String apiRespStr = openApiClient().callOpenApi(
@@ -52,18 +52,17 @@ public class MainController {
         JSONObject apiResp = JSON.parseObject(apiRespStr);
         JSONObject response = new JSONObject(apiResp);
         // response.put("rsaPubKey", openApiClient().getOpenApiPublicKey());
+        System.out.println("INITIALIZE");
         return response;
     }
 
     @PostMapping("facecapture/checkresult")
     public JSONObject faceCaptureCheck(@RequestBody String transactionId) {
        try {
-        String businessId = "" + System.currentTimeMillis();
-        String isReturnImage = "false";
         JSONObject apiReq = new JSONObject();
-        apiReq.put("bizId", businessId);
+        apiReq.put("bizId", String.valueOf(System.currentTimeMillis()));
         apiReq.put("transactionId", transactionId);
-        apiReq.put("isReturnImage", isReturnImage);
+        apiReq.put("isReturnImage", "false");
 
         String apiRespStr = openApiClient().callOpenApi(
                 "v1.zoloz.facecapture.checkresult",
@@ -71,9 +70,9 @@ public class MainController {
         );
 
         JSONObject apiResp = JSON.parseObject(apiRespStr);
-
         JSONObject response = new JSONObject(apiResp);
         System.out.println("CHECK RESULT");
+
         return response;
        } catch (Exception e) {
         JSONObject error = new JSONObject();
